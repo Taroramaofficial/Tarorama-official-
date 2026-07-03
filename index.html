@@ -368,7 +368,7 @@
         window.renderCategoryGrid = () => {
             document.getElementById('category-grid').innerHTML = window.appState.categories.map(cat => `
                 <div class="category-card" onclick="filterByCategory('${cat.id}')">
-                    <img src="${cat.image}" alt="${cat.name}">
+                    <img src="${cat.image}" alt="${cat.name}" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=display:flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:50%;background:#f0f0f0;color:#999;font-size:0.6rem;>No Image</div>')">
                     <span>${cat.name}</span>
                 </div>`).join('');
         };
@@ -403,7 +403,7 @@
             const stockLabel = product.stock <= 5 ? `<span class="stock-low">Only ${product.stock} left</span>` : '';
             return `<div class="product-card" onclick="navigateTo('product', '${product.id}')">
                 <div class="product-image">
-                    <img src="${product.image}" alt="${product.name}" loading="lazy">
+                    <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=display:flex;align-items:center;justify-content:center;height:200px;color:#999;font-size:0.85rem;background:#f0f0f0;>No Image</div>')">
                     ${product.discount > 0 ? `<span class="discount-badge">-${product.discount}%</span>` : ''}
                     ${stockLabel}
                     <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-pid="${product.id}" onclick="event.stopPropagation(); toggleWishlist('${product.id}')">
@@ -487,7 +487,7 @@
                 </div>
                 <div class="product-detail-grid">
                     <div class="product-images">
-                        <div class="main-image"><img src="${product.image}" alt="${product.name}"></div>
+                        <div class="main-image"><img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=display:flex;align-items:center;justify-content:center;height:400px;color:#999;font-size:1.2rem;background:#f0f0f0;>No Image Available</div>'"></div>
                     </div>
                     <div class="product-details">
                         <h1>${product.name}</h1>
@@ -546,7 +546,7 @@
                         <h2>Shopping Cart (${cart.length} items)</h2>
                         ${cart.map(item => `
                             <div class="cart-item">
-                                <img src="${item.image}" alt="${item.name}">
+                                <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=display:flex;align-items:center;justify-content:center;width:100px;height:100px;background:#f8f9fa;color:#999;font-size:0.7rem;>No Image</div>')">
                                 <div class="cart-item-details">
                                     <h3>${item.name}</h3><p>${item.brand}</p>
                                     <div class="cart-item-price">
@@ -601,7 +601,7 @@
                         <span class="order-status ${order.status}">${order.status}</span>
                     </div>
                     <div class="order-items">${order.items.map(item => `
-                        <div class="order-item"><img src="${item.image}" alt="${item.name}"><div><h4>${item.name}</h4><p>Qty: ${item.qty} x Rs.${item.price.toLocaleString()}</p></div></div>`).join('')}</div>
+                        <div class="order-item"><img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=display:flex;align-items:center;justify-content:center;width:100px;height:100px;background:#f8f9fa;color:#999;font-size:0.7rem;>No Image</div>')"><div><h4>${item.name}</h4><p>Qty: ${item.qty} x Rs.${item.price.toLocaleString()}</p></div></div>`).join('')}</div>
                     <div class="order-footer"><span>Total: Rs.${order.total.toLocaleString()}</span><button class="btn-outline">Track Order</button></div>
                 </div>`).join('')}</div>`;
         };
@@ -634,7 +634,7 @@
                     </div>
                     <div class="checkout-summary">
                         <h3>Order Summary</h3>
-                        ${cart.map(item => `<div class="summary-item"><img src="${item.image}" alt="${item.name}"><div><span>${item.name}</span><span>Qty: ${item.qty}</span></div><span>Rs.${(item.price * item.qty).toLocaleString()}</span></div>`).join('')}
+                        ${cart.map(item => `<div class="summary-item"><img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=display:flex;align-items:center;justify-content:center;width:100px;height:100px;background:#f8f9fa;color:#999;font-size:0.7rem;>No Image</div>')"><div><span>${item.name}</span><span>Qty: ${item.qty}</span></div><span>Rs.${(item.price * item.qty).toLocaleString()}</span></div>`).join('')}
                         <div class="summary-divider"></div>
                         <div class="summary-row"><span>Subtotal</span><span>Rs.${subtotal.toLocaleString()}</span></div>
                         <div class="summary-row"><span>Delivery</span><span>${delivery === 0 ? 'FREE' : 'Rs.' + delivery}</span></div>
@@ -815,7 +815,7 @@
                             : `<div class="admin-products">
                                 ${window.appState.products.map(p => `
                                     <div class="admin-product-item">
-                                        <img src="${p.image}" alt="${p.name}">
+                                        <img src="${p.image}" alt="${p.name}" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=display:flex;align-items:center;justify-content:center;width:60px;height:60px;background:#f8f9fa;color:#999;font-size:0.6rem;>No Image</div>')">
                                         <div class="admin-product-info">
                                             <h4>${p.name}</h4>
                                             <p>${p.brand} | Rs.${p.price.toLocaleString()} | Stock: ${p.stock}</p>
@@ -955,7 +955,9 @@
                 stock: parseInt(form.stock.value),
                 image: form.image.value,
                 description: form.description.value
-            };
+            ,
+                rating: parseFloat(form.rating.value) || 4.5,
+                reviews: parseInt(form.reviews.value) || 0};
             editProduct(productId, updates);
             navigateTo('admin');
         };
@@ -1417,6 +1419,10 @@
             position: relative;
             padding: 1rem;
             background: #f8f9fa;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .product-image img {
@@ -1589,6 +1595,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 400px;
         }
         
         .main-image img {
